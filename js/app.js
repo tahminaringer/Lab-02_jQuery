@@ -12,13 +12,13 @@ function Photo(photo){
 }
 
 Photo.prototype.render = function() {
-  let $photoClone = $('.photo-template').clone();
+  let $photoClone = $('#photo-template').clone();
   $('main').append($photoClone);
   $photoClone.find('h2').text(this.title);
-  $photoClone.find('img').text(this.image_url);
+  $photoClone.find('img').attr('src', this.image_url);
   $photoClone.find('p').text(this.description);
-  $photoClone.removeClass('photo-template');
-  $photoClone.attr('class', this.title);
+  $photoClone.removeClass('#photo-template');
+  $photoClone.attr('class', this.keyword);
 };
 
 Photo.readJson =() => {
@@ -27,17 +27,49 @@ Photo.readJson =() => {
     dataType: 'json'
   }
 
-  $.ajax('data.json', ajaxSettings)
+  $.ajax('data/page-1.json', ajaxSettings)
     .then(data => {
       data.forEach(item => {
         let photo = new Photo(item);
         photo.render();
       })
+      createAnimalArr();
+      populateDropdown();
+      selectedItems();
     })
 }
 
 $(() => Photo.readJson());
 
-// $('select').on('change', function() {
+const keywordArr = [];
 
-// })
+function createAnimalArr() {
+  animalArray.forEach(object => {
+    if (!keywordArr.includes(object.keyword)) {
+      keywordArr.push(object.keyword);
+    }
+  })
+}
+
+function populateDropdown () {
+  keywordArr.forEach(keyword => {
+    $('#select-keyword').append(`<option value=${keyword}>${keyword}</option>`);
+  })
+}
+
+
+
+let selectedItems = () => {
+  $('select').on('change', function() {
+    let item = this.value;
+    console.log(item);
+    $('section').hide();
+    animalArray.forEach(object => {
+      if (item === object.keyword) {
+        let showOnlyClass = item;
+        $('.' + showOnlyClass).show();
+      }
+    })
+  })
+}
+
