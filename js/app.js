@@ -36,6 +36,7 @@ Photo.readJson =() => {
       createAnimalArr();
       populateDropdown();
       selectedItems();
+      $('#photo-template').hide();
     })
 }
 
